@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"github.com/thomiaditya/shop-api/internal/app"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	if err := app.NewApp().Start(); err != nil {
+		panic(err)
+	}
 }
