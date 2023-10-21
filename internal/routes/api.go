@@ -19,18 +19,18 @@ func NewAPIRouter(server *echo.Echo) *APIRouter {
 	}
 }
 
-func (router *APIRouter) RegisterRoutes(routes ...func(*echo.Group)) {
-	for _, route := range routes {
-		route(router.api)
+func (router *APIRouter) RegisterRoutes(routers ...RouterInterface) {
+	for _, route := range routers {
+		route.RegisterRoutes(router.api)
 	}
 }
 
 func RegisterAPIRoutes(ctx context.Context, server *echo.Echo) {
 	// Register the API routes
-	apiRouter := NewAPIRouter(server)
+	api := NewAPIRouter(server)
 
-	apiRouter.RegisterRoutes(
-		customerRoutes,
+	api.RegisterRoutes(
+		NewCustomerRouter(),
 	)
 
 	// Register the default route

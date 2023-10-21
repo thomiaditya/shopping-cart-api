@@ -5,9 +5,16 @@ import (
 	"github.com/thomiaditya/shop-api/internal/http/controller"
 )
 
-func customerRoutes(source *echo.Group) {
-	customerRouteGroup := source.Group("/customer")
+type CustomerRouter struct{}
+
+func NewCustomerRouter() RouterInterface {
+	return &CustomerRouter{}
+}
+
+func (router *CustomerRouter) RegisterRoutes(api *echo.Group) error {
+	customerRoutes := api.Group("/customer")
 
 	customerController := controller.NewCustomerController()
-	customerRouteGroup.GET("", customerController.RegisterCustomer)
+	customerRoutes.GET("", customerController.RegisterCustomer)
+	return nil
 }
