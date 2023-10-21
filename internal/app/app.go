@@ -1,9 +1,10 @@
 package app
 
 import (
-	"net/http"
+	"context"
 
 	"github.com/labstack/echo/v4"
+	"github.com/thomiaditya/shop-api/internal/routes"
 )
 
 type App struct {
@@ -16,10 +17,9 @@ func NewApp() *App {
 	}
 }
 
-func (app *App) Start() error {
-	app.server.GET("/", func(context echo.Context) error {
-		return context.String(http.StatusOK, "Hello, world!")
-	})
+func (app *App) Start(ctx context.Context) error {
+	// Register the routes
+	routes.RegisterAPIRoutes(ctx, app.server)
 
 	// Start the server
 	return app.server.Start(":8080")
