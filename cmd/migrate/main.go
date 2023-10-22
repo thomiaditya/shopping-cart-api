@@ -5,75 +5,29 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
-	"github.com/thomiaditya/shop-api/internal/database"
-	"github.com/thomiaditya/shop-api/internal/model"
-	"gorm.io/gorm"
+	"github.com/thomiaditya/shop-api/internal/migration"
 )
 
-type Migrate struct {
-	db database.DatabaseInterface
-}
-
-func NewMigrate() *Migrate {
-	return &Migrate{}
-}
-
-func (m *Migrate) modelsToMigrate(db *gorm.DB) []interface{} {
-	return []interface{}{
-		&model.Customer{},
-	}
-}
-
-func (m *Migrate) Start(ctx context.Context) error {
-	// Load the configuration
-	err := godotenv.Load()
-	if err != nil {
-		return err
-	}
-
-	// Connect to the database
-	m.db = database.NewPostgresDatabaseFromConfig()
-	err = m.db.Connect(ctx)
-	if err != nil {
-		return err
-	}
-
-	// Migrate the database
-	err = m.migrate(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Migrate) migrate(ctx context.Context) error {
-	fmt.Println("Migrating database...")
-
-	// Migrate the database
-	modelList := m.modelsToMigrate(m.db.GetConnection())
-	for _, model := range modelList {
-		err := m.db.GetConnection().AutoMigrate(model)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("Migrated model: %T\n", model)
-	}
-
-	fmt.Println("Migrated database")
-
-	return nil
-}
-
 func main() {
+	var argument string
+	if len(os.Args) > 1 {
+		argument = os.Args[1]
+	}
+
 	// Create a new migrate instance
-	migrate := NewMigrate()
+	migrate := migration.NewMigrate()
 
 	// Start the migrate process
-	err := migrate.Start(context.Background())
+	migration, err := migrate.ConnectDatabase(context.Background())
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	if argument == "down" {
+		_ = migration.Down(context.Background())
+		return
+	}
+
+	migration.Up(context.Background())
 }

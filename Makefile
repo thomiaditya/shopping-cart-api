@@ -31,3 +31,6 @@ endif
 # Set migration
 migrate:
 	@go run ./cmd/migrate/main.go
+
+migrate-down:
+	@go run ./cmd/migrate/main.go down

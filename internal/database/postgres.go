@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/thomiaditya/shop-api/util"
 	"gorm.io/driver/postgres"
@@ -32,14 +32,14 @@ func NewPostgresDatabaseFromConfig() *PostgresDatabase {
 func (db *PostgresDatabase) Connect(ctx context.Context) error {
 	dsn := "host=" + db.Host + " user=" + db.Username + " password=" + db.Password + " dbname=" + db.Database + " port=" + db.Port + " sslmode=disable TimeZone=Asia/Jakarta"
 
-	fmt.Println("Connecting to database...")
+	log.Println("Connecting to database...")
 
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Connected to database:\nDB_HOST=" + db.Host + "\nDB_PORT=" + db.Port + "\nDB_USERNAME=" + db.Username + "\nDB_PASSWORD=" + db.Password + "\nDB_DATABASE=" + db.Database)
+	log.Println("Database connected!")
 
 	db.Connection = conn
 	return nil
