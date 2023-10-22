@@ -29,7 +29,7 @@ func (app *App) Start(ctx context.Context) error {
 	}
 
 	// Connect to the database
-	db := database.GetDatabaseInstance()
+	_ = database.GetDatabaseInstance()
 
 	// Register the routes
 	apiRouter := routes.NewAPIRouter(app.Server)

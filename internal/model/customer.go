@@ -1,17 +1,16 @@
 package model
 
 import (
-	"github.com/thomiaditya/shop-api/internal/database"
 	"gorm.io/gorm"
 )
 
 type Customer struct {
-	gorm.Model
 	Name         string `gorm:"type:varchar(100);not null"`
 	Email        string `gorm:"type:varchar(100);not null"`
 	Username     string `gorm:"type:varchar(100);not null"`
 	PasswordHash string `gorm:"type:varchar(100);not null"`
 	ActiveCartId uint   `gorm:"type:integer;null"`
+	gorm.Model
 }
 
 func (Customer) TableName() string {
@@ -26,8 +25,6 @@ func NewCustomer(name string, email string, username string, passwordHash string
 		PasswordHash: passwordHash,
 	}
 }
-
-var db = database.GetDatabaseInstance().GetConnection()
 
 func (customer *Customer) Save() error {
 	return db.Create(customer).Error

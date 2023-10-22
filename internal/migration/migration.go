@@ -32,11 +32,7 @@ func (m *Migrate) ConnectDatabase(ctx context.Context) (*Migrate, error) {
 	}
 
 	// Connect to the database
-	m.db = database.NewPostgresDatabaseFromConfig()
-	err = m.db.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
+	m.db = database.GetDatabaseInstance()
 
 	return m, nil
 }
