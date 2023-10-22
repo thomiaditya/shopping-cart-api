@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"log"
 
 	"github.com/thomiaditya/shop-api/util"
@@ -20,16 +19,19 @@ type PostgresDatabase struct {
 
 // Load the configuration from the environment variables and return a new PostgresDatabase instance
 func NewPostgresDatabaseFromConfig() *PostgresDatabase {
-	return &PostgresDatabase{
+	db := &PostgresDatabase{
 		Host:     util.GetEnv("DB_HOST", "localhost"),
 		Port:     util.GetEnv("DB_PORT", "5432"),
 		Username: util.GetEnv("DB_USERNAME", "postgres"),
 		Password: util.GetEnv("DB_PASSWORD", "postgres"),
 		Database: util.GetEnv("DB_DATABASE", "postgres"),
 	}
+
+	db.Connect()
+	return db
 }
 
-func (db *PostgresDatabase) Connect(ctx context.Context) error {
+func (db *PostgresDatabase) Connect() error {
 	dsn := "host=" + db.Host + " user=" + db.Username + " password=" + db.Password + " dbname=" + db.Database + " port=" + db.Port + " sslmode=disable TimeZone=Asia/Jakarta"
 
 	log.Println("Connecting to database...")

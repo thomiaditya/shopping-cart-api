@@ -30,10 +30,6 @@ func (app *App) Start(ctx context.Context) error {
 
 	// Connect to the database
 	db := database.GetDatabaseInstance()
-	err = db.Connect(ctx)
-	if err != nil {
-		return err
-	}
 
 	// Register the routes
 	apiRouter := routes.NewAPIRouter(app.Server)

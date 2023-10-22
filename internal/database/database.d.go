@@ -1,14 +1,13 @@
 package database
 
 import (
-	"context"
 	"sync"
 
 	"gorm.io/gorm"
 )
 
 type DatabaseInterface interface {
-	Connect(ctx context.Context) error
+	Connect() error
 	GetConnection() *gorm.DB
 }
 

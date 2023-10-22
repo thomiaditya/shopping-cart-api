@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/thomiaditya/shop-api/internal/database"
 	"gorm.io/gorm"
 )
 
@@ -24,4 +25,10 @@ func NewCustomer(name string, email string, username string, passwordHash string
 		Username:     username,
 		PasswordHash: passwordHash,
 	}
+}
+
+var db = database.GetDatabaseInstance().GetConnection()
+
+func (customer *Customer) Save() error {
+	return db.Create(customer).Error
 }
