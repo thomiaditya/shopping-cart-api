@@ -26,16 +26,15 @@ func (router *APIRouter) RegisterRoutes(routers ...RouterInterface) {
 }
 
 // Register the API routes in this function
-func RegisterAPIRoutes(ctx context.Context, server *echo.Echo) {
-	// Register the API routes
-	api := NewAPIRouter(server)
-
+func (api *APIRouter) RegisterAPIRoutes(ctx context.Context) error {
 	api.RegisterRoutes(
 		NewCustomerRouter(),
 	)
 
 	// Register the default route
-	server.GET("/", func(c echo.Context) error {
+	api.server.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "It works!")
 	})
+
+	return nil
 }

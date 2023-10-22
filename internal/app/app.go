@@ -12,13 +12,12 @@ import (
 )
 
 type App struct {
-	server *echo.Echo
-	db     database.DatabaseInterface
+	Server *echo.Echo
 }
 
 func NewApp() *App {
 	return &App{
-		server: echo.New(),
+		Server: echo.New(),
 	}
 }
 
@@ -30,17 +29,21 @@ func (app *App) Start(ctx context.Context) error {
 	}
 
 	// Connect to the database
-	app.db = database.NewPostgresDatabaseFromConfig()
-	err = app.db.Connect(ctx)
+	db := database.GetDatabaseInstance()
+	err = db.Connect(ctx)
 	if err != nil {
 		return err
 	}
 
 	// Register the routes
-	routes.RegisterAPIRoutes(ctx, app.server)
+	apiRouter := routes.NewAPIRouter(app.Server)
+	err = apiRouter.RegisterAPIRoutes(ctx)
+	if err != nil {
+		return err
+	}
 
 	// Start the server
 	port := util.GetEnv("PORT", "8080")
 	portFormatted := fmt.Sprintf(":%s", port)
-	return app.server.Start(portFormatted)
+	return app.Server.Start(portFormatted)
 }
