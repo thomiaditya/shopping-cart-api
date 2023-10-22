@@ -44,3 +44,7 @@ func (db *PostgresDatabase) Connect(ctx context.Context) error {
 	db.Connection = conn
 	return nil
 }
+
+func (db *PostgresDatabase) GetConnection() *gorm.DB {
+	return db.Connection
+}

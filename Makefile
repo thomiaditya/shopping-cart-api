@@ -27,3 +27,7 @@ ifeq ($(shell uname),Windows_NT)
 else
 	rm -f ./out/$(BINARY_NAME)
 endif
+
+# Set migration
+migrate:
+	@go run ./cmd/migrate/main.go
