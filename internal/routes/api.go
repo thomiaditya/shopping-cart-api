@@ -25,6 +25,7 @@ func (router *APIRouter) RegisterRoutes(routers ...RouterInterface) {
 	}
 }
 
+// Register the API routes in this function
 func RegisterAPIRoutes(ctx context.Context, server *echo.Echo) {
 	// Register the API routes
 	api := NewAPIRouter(server)
