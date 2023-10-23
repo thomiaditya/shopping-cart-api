@@ -12,7 +12,7 @@ type Customer struct {
 	PasswordHash string `gorm:"type:varchar(100);not null"`
 	ActiveCartId uint
 
-	CartList  []Cart `gorm:"foreignKey:CustomerId"`
+	CartList  []Cart
 	OrderList []Order
 }
 
@@ -39,15 +39,32 @@ func CreateNewCustomer(customer *Customer) (*Customer, error) {
 	return customer, nil
 }
 
+// Get the customer based on the customer ID.
+func GetCustomer(id uint) (*Customer, error) {
+	var customer Customer
+	err := db.First(&customer, id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &customer, nil
+}
+
 // Save saves the customer to the database.
 func (customer *Customer) Save() error {
 	return db.Create(customer).Error
 }
 
+// Update updates the customer in the database.
+func (customer *Customer) Update() error {
+	return db.Save(customer).Error
+}
+
 // ActiveCart returns the active cart of the customer.
 func (customer *Customer) ActiveCart() *Cart {
 	var cart Cart
-	db.Model(&customer).Association("CartList").Find(&cart, customer.ActiveCartId)
+	db.Model(&Cart{}).Where("id = ?", customer.ActiveCartId).First(&cart)
+
 	return &cart
 }
 
@@ -58,8 +75,8 @@ func (customer *Customer) Carts() []Cart {
 	return carts
 }
 
-// AddCart adds a cart to the customer. This method is used to create a new cart for the customer and set it as the active cart.
-func (customer *Customer) AddCart(cart *Cart) error {
+// CreateNewCart adds a cart to the customer. This method is used to create a new cart for the customer and set it as the active cart.
+func (customer *Customer) CreateNewCart() error {
 	// Close previous active cart
 	if customer.ActiveCartId != 0 {
 		err := customer.ActiveCart().Close()
@@ -68,11 +85,17 @@ func (customer *Customer) AddCart(cart *Cart) error {
 		}
 	}
 
-	err := db.Model(customer).Association("CartList").Append(cart)
+	var cart Cart
+	err := db.Model(customer).Association("CartList").Append(&cart)
 	if err != nil {
 		return err
 	}
 
 	customer.ActiveCartId = cart.ID
+	err = customer.Update()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

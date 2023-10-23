@@ -17,7 +17,6 @@ type Cart struct {
 	Status      CartStatus `gorm:"type:varchar(100);default:open"`
 	CustomerId  uint
 
-	Customer  *Customer  `gorm:"foreignKey:CustomerId;references:ID"`
 	Products  []*Product `gorm:"many2many:cart_items;"`
 	OrderList []Order
 }
@@ -46,6 +45,10 @@ func (cart *Cart) Save() error {
 	return db.Create(cart).Error
 }
 
+func (cart *Cart) Update() error {
+	return db.Save(cart).Error
+}
+
 // AddProduct adds a product to the cart. This method is used to add a product to the cart. If the product is already in the cart, the quantity of the product will be increased.
 func (cart *Cart) AddProduct(product *Product, quantity uint) error {
 	// Check if the product is already in the cart
@@ -65,6 +68,13 @@ func (cart *Cart) AddProduct(product *Product, quantity uint) error {
 			return err
 		}
 
+		// Update the total amount of the cart
+		cart.TotalAmount += product.Price * quantity
+		err = cart.Update()
+		if err != nil {
+			return err
+		}
+
 		return nil
 	}
 
@@ -75,6 +85,13 @@ func (cart *Cart) AddProduct(product *Product, quantity uint) error {
 	}
 
 	err = cartItem.Save()
+	if err != nil {
+		return err
+	}
+
+	// Update the total amount of the cart
+	cart.TotalAmount += product.Price * quantity
+	err = cart.Update()
 	if err != nil {
 		return err
 	}

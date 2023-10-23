@@ -3,44 +3,58 @@ package main
 import (
 	"log"
 
+	"github.com/jaswdr/faker"
 	"github.com/thomiaditya/shop-api/internal/model"
 )
 
-func Seed() error {
+var fake = faker.New()
+
+func SeedCustomers() error {
 
 	customer, err := model.CreateNewCustomer(&model.Customer{
-		Name:         "Thomi Aditya",
-		Email:        "thomiaditya@gmail.com",
-		Username:     "thomiaditya",
-		PasswordHash: "12345678",
+		Name:         fake.Person().Name(),
+		Email:        fake.Internet().Email(),
+		Username:     fake.Internet().User(),
+		PasswordHash: "password",
 	})
 	if err != nil {
 		return err
 	}
 
-	customer.AddCart(&model.Cart{
-		TotalAmount: 100000000,
-	})
+	customer.CreateNewCart()
 
-	product, err := model.CreateNewProduct(&model.Product{
-		Name:        "Macbook Pro 2020",
-		Price:       20000000,
+	return nil
+}
+
+func SeedProducts() error {
+	_, err := model.CreateNewProduct(&model.Product{
+		Name:        fake.Lorem().Word(),
+		Price:       fake.UIntBetween(100, 1000),
 		Stock:       10,
-		Description: "Macbook Pro 2020",
-		Category:    "Laptop",
+		Description: fake.Lorem().Sentence(10),
+		Category:    fake.Lorem().Word(),
 	})
 	if err != nil {
 		return err
 	}
-
-	customer.ActiveCart().AddProduct(product, 10)
-	customer.ActiveCart().AddProduct(product, 10)
 
 	return nil
 }
 
 func main() {
 	log.Println("Seeding the database...")
-	Seed()
+	for i := 0; i < 100; i++ {
+		SeedCustomers()
+		SeedProducts()
+	}
+
+	for i := 0; i < 10; i++ {
+		customer, _ := model.GetCustomer(uint(fake.UIntBetween(1, 100)))
+		product, _ := model.GetProduct(uint(fake.UIntBetween(1, 100)))
+
+		cart := customer.ActiveCart()
+		cart.AddProduct(product, uint(fake.UIntBetween(1, 10)))
+	}
+
 	log.Println("Database seeded!")
 }
