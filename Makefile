@@ -35,5 +35,9 @@ migrate:
 migrate-down:
 	@go run ./cmd/migrate/main.go down
 
+migrate-fresh:
+	@go run ./cmd/migrate/main.go down
+	@go run ./cmd/migrate/main.go
+
 seed:
 	@go run ./cmd/seed/main.go

@@ -7,22 +7,34 @@ import (
 )
 
 func Seed() error {
-	// Create the customers
-	customers := []model.Customer{
-		{
-			Name:         "John Doe",
-			Email:        "johndoe@gmail.com",
-			Username:     "johndoe",
-			PasswordHash: "123456",
-		},
+
+	customer, err := model.CreateNewCustomer(&model.Customer{
+		Name:         "Thomi Aditya",
+		Email:        "thomiaditya@gmail.com",
+		Username:     "thomiaditya",
+		PasswordHash: "12345678",
+	})
+	if err != nil {
+		return err
 	}
 
-	for _, customer := range customers {
-		err := customer.Save()
-		if err != nil {
-			return err
-		}
+	customer.AddCart(&model.Cart{
+		TotalAmount: 100000000,
+	})
+
+	product, err := model.CreateNewProduct(&model.Product{
+		Name:        "Macbook Pro 2020",
+		Price:       20000000,
+		Stock:       10,
+		Description: "Macbook Pro 2020",
+		Category:    "Laptop",
+	})
+	if err != nil {
+		return err
 	}
+
+	customer.ActiveCart().AddProduct(product, 10)
+	// customer.ActiveCart().AddProduct(product, 10)
 
 	return nil
 }

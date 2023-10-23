@@ -34,8 +34,6 @@ func NewPostgresDatabaseFromConfig() *PostgresDatabase {
 func (db *PostgresDatabase) Connect() error {
 	dsn := "host=" + db.Host + " user=" + db.Username + " password=" + db.Password + " dbname=" + db.Database + " port=" + db.Port + " sslmode=disable TimeZone=Asia/Jakarta"
 
-	log.Println("Connecting to database...")
-
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
