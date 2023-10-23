@@ -10,8 +10,10 @@ type Customer struct {
 	Email        string `gorm:"type:varchar(100);not null"`
 	Username     string `gorm:"type:varchar(100);not null"`
 	PasswordHash string `gorm:"type:varchar(100);not null"`
-	CartList     []Cart `gorm:"foreignKey:CustomerId"`
 	ActiveCartId uint
+
+	CartList  []Cart `gorm:"foreignKey:CustomerId"`
+	OrderList []Order
 }
 
 func (Customer) TableName() string {

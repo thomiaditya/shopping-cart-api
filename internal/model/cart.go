@@ -16,8 +16,10 @@ type Cart struct {
 	TotalAmount uint       `gorm:"type:integer;null"`
 	Status      CartStatus `gorm:"type:varchar(100);default:open"`
 	CustomerId  uint
-	Customer    *Customer  `gorm:"foreignKey:CustomerId;references:ID"`
-	Products    []*Product `gorm:"many2many:cart_items;"`
+
+	Customer  *Customer  `gorm:"foreignKey:CustomerId;references:ID"`
+	Products  []*Product `gorm:"many2many:cart_items;"`
+	OrderList []Order
 }
 
 func (Cart) TableName() string {

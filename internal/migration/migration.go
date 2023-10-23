@@ -24,6 +24,8 @@ func (m *Migrate) modelsToMigrate(db *gorm.DB) []interface{} {
 		&model.Product{},
 		&model.Cart{},
 		&model.CartItem{},
+		&model.Order{},
+		&model.Payment{},
 	}
 }
 
