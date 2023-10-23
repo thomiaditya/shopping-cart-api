@@ -34,7 +34,7 @@ func Seed() error {
 	}
 
 	customer.ActiveCart().AddProduct(product, 10)
-	// customer.ActiveCart().AddProduct(product, 10)
+	customer.ActiveCart().AddProduct(product, 10)
 
 	return nil
 }
