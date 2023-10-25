@@ -10,7 +10,6 @@ import (
 var fake = faker.New()
 
 func SeedCustomers() error {
-
 	customer, err := model.CreateNewCustomer(&model.Customer{
 		Name:         fake.Person().Name(),
 		Email:        fake.Internet().Email(),
@@ -48,7 +47,7 @@ func main() {
 		SeedProducts()
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		customer, _ := model.GetCustomer(uint(fake.UIntBetween(1, 100)))
 		product, _ := model.GetProduct(uint(fake.UIntBetween(1, 100)))
 
